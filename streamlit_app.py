@@ -65,12 +65,16 @@ def takeoff_ramp(v0, angle_deg, duration=0.25):
 
 
 def tangent_landing_ramp(xs, ys, vxs, vys, max_drop):
-    # Use final trajectory slope
+    # Landing ramp tangent to trajectory at terminus and strictly below it
+    # Uses downward-opening curvature so ramp stays below flight path
     x0, y0 = xs[-1], ys[-1]
     slope = vys[-1] / vxs[-1]
 
-    x = np.linspace(x0 - max_drop * 4, x0, 120)
-    y = slope * (x - x0) + 0.25 * (x - x0)**2 / max_drop
+    # Build ramp only near the end of flight
+    x = np.linspace(x0 - 4 * max_drop, x0, 120)
+
+    # Tangent line minus quadratic drop (opens downward)
+    y = slope * (x - x0) - (x - x0)**2 / (4 * max_drop)
     return x, y
 
 # ----------------------
