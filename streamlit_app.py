@@ -24,7 +24,7 @@ def simulate_projectile(v0, angle_deg, mass, area, Cd, rho, wind_vx, wind_vy, g,
 
     xs, ys, vxs, vys, ts = [x], [y], [vx], [vy], [t]
 
-    while y >= 0 and t < t_max:
+    while y >= landing_height and t < t_max:
         vrel_x = vx - wind_vx
         vrel_y = vy - wind_vy
         vrel = np.hypot(vrel_x, vrel_y)
@@ -53,7 +53,7 @@ def apex(xs, ys):
     return xs[i], ys[i], i
 
 
-def terminus(xs, ys):
+def landing_point(xs, ys):
     return xs[-1], ys[-1]
 
 # ----------------------
@@ -102,6 +102,11 @@ st.title("Bike Jump Simulator")
 
 unit_system = st.radio("Unit System", ["Metric", "Imperial"])
 
+# Landing elevation relative to takeoff
+landing_height = st.slider("Landing Elevation (relative to takeoff)", -10.0, 10.0, 0.0) if unit_system == "Metric" else st.slider("Landing Elevation (relative to takeoff)", -30.0, 30.0, 0.0)
+
+unit_system = unit_system("Unit System", ["Metric", "Imperial"])
+
 if unit_system == "Metric":
     g = 9.81
     rho = 1.225
@@ -131,7 +136,7 @@ wind_vy = wind_speed * np.sin(np.deg2rad(wind_angle))
 
 xs, ys, vxs, vys, ts = simulate_projectile(v0, angle, mass, area, Cd, rho, wind_vx, wind_vy, g)
 hx, hy, h_idx = apex(xs, ys)
-tx, ty = terminus(xs, ys)
+tx, ty = landing_po
 
 trx, try_, ramp_len = takeoff_ramp(v0, angle)
 lx, ly = tangent_landing_ramp(xs, ys, vxs, vys, max_drop)
