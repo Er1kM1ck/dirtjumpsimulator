@@ -285,7 +285,7 @@ if not jump_feasible:
 
 
 trx, try_, ramp_len = takeoff_ramp(v0, angle)
-lx, ly = tangent_landing_ramp(xs, ys, vxs, vys, max_drop)
+lx, ly = tangent_landing_ramp(xs, ys, vxs, vys, landing_height, max_drop)
 
 v_imp, KE, F_avg, g_force = impact_metrics(mass, vxs, vys, max_drop, g)
 
@@ -449,6 +449,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
