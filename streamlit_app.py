@@ -221,21 +221,25 @@ jump_feasible = (
 )
 
 # ----------------------
-# User Guidance (B)
+# Offending Slider Detection (B)
 # ----------------------
 
-if not jump_feasible:
-    st.error(
-        "⚠️ Jump not feasible with current settings.\n\n"
-        "The rider does not reach the landing elevation.\n\n"
-        "Suggested adjustments:\n"
-        "• Reduce headwind speed\n"
-        "• Increase launch speed\n"
-        "• Lower landing elevation\n"
-        "• Increase launch angle slightly"
-    )
-    st.stop()
+primary_issue = None
+suggestion = None
 
+if not jump_feasible:
+    if wind_vx < -5:
+        primary_issue = "Wind Speed"
+        suggestion = "Reduce headwind magnitude"
+    elif landing_height > hy * 0.9:
+        primary_issue = "Landing Elevation"
+        suggestion = "Lower landing elevation"
+    elif v0 < 10:
+        primary_issue = "Launch Speed"
+        suggestion = "Increase launch speed"
+    else:
+        primary_issue = "Launch Angle"
+        suggestion = "Increase launch angle slightly"
 
 
 trx, try_, ramp_len = takeoff_ramp(v0, angle)
@@ -364,6 +368,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
