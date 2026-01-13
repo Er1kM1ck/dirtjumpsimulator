@@ -262,7 +262,7 @@ ax.set_xlabel(f"Horizontal Distance ({units})")
 ax.set_ylabel(f"Vertical Height ({units})")
 ax.legend()
 ax.grid(True)
-ax.set_aspect("equal", adjustable="box")
+ax.set_aspect("auto")
 
 plot_placeholder.pyplot(fig)
 
@@ -294,7 +294,14 @@ else:
     impact_speed_display = v_imp * 0.681818   # ft/s → mi/h
     impact_speed_units = "mi/h"
 
-st.write(f"**Impact speed:** {impact_speed_display:.1f} {impact_speed_units}")
+if unit_system == "Metric":
+    v_imp_display = v_imp * 3.6
+    speed_units = "km/hr"
+else:
+    v_imp_display = v_imp / 1.46667
+    speed_units = "mi/hr"
+
+st.write(f"Impact speed: **{v_imp_display:.1f} {speed_units}**")
 
 st.write(f"**Kinetic energy at impact:** {KE_display:.1f} {KE_units}")
 st.write(f"**Average stopping force:** {F_display:.1f} {F_units}")
@@ -319,6 +326,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
