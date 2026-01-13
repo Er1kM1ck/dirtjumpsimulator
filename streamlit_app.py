@@ -16,7 +16,12 @@ import matplotlib.pyplot as plt
 # Physics Core
 # ----------------------
 
-def simulate_projectile(v0, angle_deg, mass, area, Cd, rho, wind_vx, wind_vy, g, dt=0.01, t_max=30):
+def simulate_projectile(
+    v0, angle_deg, mass, area, Cd, rho, wind_vx, wind_vy, g,
+    landing_height=-1e6,
+    dt=0.01,
+    t_max=30
+):
     angle = np.deg2rad(angle_deg)
     vx = v0 * np.cos(angle)
     vy = v0 * np.sin(angle)
@@ -294,6 +299,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
