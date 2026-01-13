@@ -115,7 +115,13 @@ def tangent_landing_ramp(xs, ys, vxs, vys, landing_height, max_drop):
     
     ramp_length = 5.0  # horizontal length of landing ramp
     ramp_x = np.linspace(x0 - ramp_length, x0, 50)
+
     ramp_y = y0 + slope * (ramp_x - x0)
+
+# --- CLIP RAMP TO NEVER EXCEED FLIGHT PATH ---
+flight_y_at_ramp = np.interp(ramp_x, xs, ys)
+ramp_y = np.minimum(ramp_y, flight_y_at_ramp)
+
 
     return ramp_x, ramp_y
 
@@ -474,6 +480,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
