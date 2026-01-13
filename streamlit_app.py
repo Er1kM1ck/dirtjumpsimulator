@@ -84,13 +84,19 @@ def takeoff_ramp(v0, angle_deg, duration=0.25):
 
 def tangent_landing_ramp(xs, ys, vxs, vys, landing_height, max_drop):
     """
-    Builds a landing ramp that begins at the earliest SAFE contact point,
-    not at the projectile terminus.
+    Builds a landing ramp that begins at the earliest SAFE contact point
+    where the rider can reach the landing elevation without exceeding
+    max allowable drop.
     """
-    idx = find_safe_landing_index(xs, ys, landing_height, max_drop)
 
-    if idx is None:
-        return [], []
+    # Find first index where trajectory is at or above landing height
+    safe_indices = np.where(ys >= landing_height)[0]
+
+    if len(safe_indices) == 0:
+        return np.array([]), np.array([])
+
+    # Choose the LAST such index before descent becomes unsafe
+    idx = safe_indices[-1]
 
     x0 = xs[idx]
     y0 = ys[idx]
@@ -99,11 +105,13 @@ def tangent_landing_ramp(xs, ys, vxs, vys, landing_height, max_drop):
     vy = vys[idx]
 
     if abs(vx) < 1e-6:
-        return [], []
+        return np.array([]), np.array([])
 
     slope = vy / vx
 
-    ramp_x = np.linspace(x0, x0 + 5, 50)
+    # Build ramp backward toward the apex (this is the key fix)
+    ramp_length = max_drop * 4
+    ramp_x = np.linspace(x0 - ramp_length, x0, 60)
     ramp_y = y0 + slope * (ramp_x - x0)
 
     return ramp_x, ramp_y
@@ -285,7 +293,13 @@ if not jump_feasible:
 
 
 trx, try_, ramp_len = takeoff_ramp(v0, angle)
-lx, ly = tangent_landing_ramp(xs, ys, vxs, vys, landing_height, max_drop)
+
+lx, ly = tangent_landing_ramp(
+    xs, ys, vxs, vys,
+    landing_height,
+    max_drop
+)
+
 
 v_imp, KE, F_avg, g_force = impact_metrics(mass, vxs, vys, max_drop, g)
 
@@ -449,6 +463,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
