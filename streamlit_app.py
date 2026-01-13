@@ -276,16 +276,18 @@ if not jump_feasible:
 else:
     st.success("✅ Jump is physically feasible with current settings.")
 
-ax.set_ylim(
-    min(-max_drop * 1.5, np.min(ys) - 1),
-    max(np.max(ys) * 1.2, 1)
-)
+
 
 # ----------------------
 # Plot
 # ----------------------
 
 fig, ax = plt.subplots(figsize=(9, 5))
+
+ax.set_ylim(
+    min(-max_drop * 1.5, np.min(ys) - 1),
+    max(np.max(ys) * 1.2, 1)
+)
 
 ax.plot(xs, ys, label="Flight Path")
 ax.plot(trx, try_, label=f"Takeoff Ramp ({ramp_len:.2f} {units})")
@@ -388,6 +390,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
