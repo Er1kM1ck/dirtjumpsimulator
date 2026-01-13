@@ -216,9 +216,11 @@ tx, ty = xs[-1], ys[-1]
 # ----------------------
 
 jump_feasible = (
-    len(xs) > 5 and
-    np.max(ys) >= landing_height
+    len(xs) > 20 and                 # prevents near-instant termination
+    np.max(ys) >= landing_height and
+    xs[-1] > 1.0                     # ensures meaningful horizontal travel
 )
+
 
 # ----------------------
 # Offending Slider Detection (B)
@@ -260,6 +262,24 @@ elif g_force <= 10:
 else:
     landing_color = "red"
     landing_label = "High risk zone (> 10 G’s)"
+
+# ----------------------
+# User Guidance (always visible)
+# ----------------------
+
+if not jump_feasible:
+    st.warning(
+        "⚠️ Jump cannot currently clear the landing.\n\n"
+        "Suggested first adjustment:\n"
+        f"➡️ **{suggestion if suggestion else 'Reduce headwind or increase speed'}**"
+    )
+else:
+    st.success("✅ Jump is physically feasible with current settings.")
+
+ax.set_ylim(
+    min(-max_drop * 1.5, np.min(ys) - 1),
+    max(np.max(ys) * 1.2, 1)
+)
 
 # ----------------------
 # Plot
@@ -368,6 +388,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
