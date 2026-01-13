@@ -105,16 +105,13 @@ unit_system = st.radio("Unit System", ["Metric", "Imperial"])
 # Landing elevation relative to takeoff
 landing_height = st.slider("Landing Elevation (relative to takeoff)", -10.0, 10.0, 0.0) if unit_system == "Metric" else st.slider("Landing Elevation (relative to takeoff)", -30.0, 30.0, 0.0)
 
-unit_system = st.radio(
-    "Unit System",
-    ["Metric", "Imperial"],
-    key="unit_system_selector"
-)
+
 
 if unit_system == "Metric":
     g = 9.81
     rho = 1.225
-    v0 = st.slider("Launch Speed (m/s)", 5.0, 36.0, 22.0)
+    v0_kmh = st.slider("Launch Speed (km/hr)", 5.0, 130.0, 80.0)
+    v0 = v0_kmh/3.6
     angle = st.slider("Launch Angle (degrees)", 5.0, 60.0, 28.0)
     mass = st.slider("Bike + Rider Mass (kg)", 70.0, 150.0, 120.0)
     area = st.slider("Cross-sectional Area (m²)", 0.1, 2.0, 0.7)
@@ -123,7 +120,8 @@ if unit_system == "Metric":
 else:
     g = 32.17
     rho = 0.00237
-    v0 = st.slider("Launch Speed (ft/s)", 20.0, 117.0, 72.0)  # up to 80 mph
+    v0_mph = st.slider("Launch Speed (mi/hr)", 5.0, 80.0, 30.0)  # up to 80 mph
+    v0=v0_mph*1.46667
     angle = st.slider("Launch Angle (degrees)", 5.0, 60.0, 28.0)
     mass_lb = st.slider("Bike + Rider Weight (lb)", 120.0, 300.0, 200.0)
     mass = mass_lb / g  # convert lb to slugs internally
@@ -182,6 +180,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer range")
+
 
 
 
