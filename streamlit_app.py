@@ -100,7 +100,7 @@ def impact_metrics(mass, vxs, vys, max_drop, g):
 st.set_page_config(layout="wide")
 st.title("Bike Jump Simulator")
 plot_placeholder = st.empty()
-plot_placeholder.pyplot(fig)
+
 
 unit_system = st.radio("Unit System", ["Metric", "Imperial"])
 
@@ -202,6 +202,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer range")
+
 
 
 
