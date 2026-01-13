@@ -29,7 +29,7 @@ def simulate_projectile(
 
     xs, ys, vxs, vys, ts = [x], [y], [vx], [vy], [t]
 
-    while y >= landing_height and t < t_max:
+    while y >= -1e6 and t < t_max:
         vrel_x = vx - wind_vx
         vrel_y = vy - wind_vy
         vrel = np.hypot(vrel_x, vrel_y)
@@ -231,11 +231,8 @@ tx, ty = xs[-1], ys[-1]
 # Feasibility Check (A)
 # ----------------------
 
-jump_feasible = (
-    len(xs) > 20 and                 # prevents near-instant termination
-    np.max(ys) >= landing_height and
-    xs[-1] > 1.0                     # ensures meaningful horizontal travel
-)
+jump_feasible = np.max(ys) >= landing_height
+
 
 # ----------------------
 # Minimum speed required to clear landing
@@ -350,6 +347,13 @@ if not jump_feasible:
 
     if guidance_message:
         st.info(f"Suggested adjustment: {guidance_message}")
+clearance = np.max(ys) - landing_height
+
+st.metric(
+    "Vertical Clearance Above Landing",
+    f"{clearance:.2f} {units}",
+    help="Must be positive to clear the landing"
+)
 
 # ----------------------
 # Plot
@@ -463,6 +467,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
