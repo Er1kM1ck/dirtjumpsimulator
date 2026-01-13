@@ -257,8 +257,20 @@ ax.scatter(hx, hy)
 ax.scatter(tx, ty)
 ax.text(hx, hy, f" Apex ({hx:.2f}, {hy:.2f})")
 ax.text(tx, ty, f" Terminus ({tx:.2f}, {ty:.2f})")
+
+# Apex guide line
+ax.axhline(
+    y=hy,
+    linestyle="--",
+    linewidth=1.5,
+    alpha=0.6,
+    label="Apex Height"
+)
+
 ax.set_xlabel(f"Horizontal Distance ({units})")
 ax.set_ylabel(f"Vertical Height ({units})")
+
+
 ax.legend()
 ax.grid(True)
 ax.set_aspect("auto")
@@ -325,6 +337,7 @@ elif g_force > 5:
     st.warning("⚠️ Moderate injury risk")
 else:
     st.success("✅ Landing forces within safer design range")
+
 
 
 
